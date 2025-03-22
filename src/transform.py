@@ -1,5 +1,10 @@
 import os
 import sys
+
+# Add the parent directory to the path if running as a script
+if __name__ == "__main__":
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.read_data import create_spark_session, read_stock_data
 from src.transform_data import group_by_hour, write_results
 
@@ -39,8 +44,8 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         print("\nInstructions:")
-        print("1. Make sure PySpark is installed: pip install pyspark")
-        print("2. Run this script with: python src/transform.py")
+        print("1. Make sure PySpark is installed: poetry install")
+        print("2. Run this script with: poetry run python src/transform.py")
         sys.exit(1)
 
 

@@ -12,22 +12,38 @@ pystock-ai/
 │   ├── read_data.py     # Module for reading Parquet data
 │   ├── transform_data.py # Module for transforming data
 │   └── transform.py     # Main application
-└── tests/               # Unit tests
-    ├── test_read_data.py
-    ├── test_transform_data.py
-    └── test_transform_script.py
+├── tests/               # Unit tests
+│   ├── test_read_data.py
+│   ├── test_transform_data.py
+│   └── test_transform_script.py
+└── pyproject.toml       # Poetry configuration
 ```
 
 ## Requirements
 
-- Python 3.7+ 
-- PySpark 3.1+
+- Python 3.11+
+- Poetry for dependency management
 
-Install dependencies:
+## Setup
+
+### Installing Poetry
+
+If you don't have Poetry installed, you can install it by following the instructions on the [official Poetry website](https://python-poetry.org/docs/#installation).
+
+### Installing Dependencies
+
+Clone the repository and install dependencies using Poetry:
 
 ```bash
-pip install pyspark pandas pytest
+# Clone the repository
+git clone https://github.com/yourusername/pystock-ai.git
+cd pystock-ai
+
+# Install dependencies
+poetry install
 ```
+
+This will create a virtual environment and install all required dependencies defined in `pyproject.toml`.
 
 ## Usage
 
@@ -37,7 +53,7 @@ pip install pyspark pandas pytest
 2. Run the main script:
 
 ```bash
-python src/transform.py
+poetry run python src/transform.py
 ```
 
 The application will:
@@ -60,21 +76,21 @@ OUTPUT_PATH = "path/to/your/output.csv"
 Run all tests:
 
 ```bash
-pytest tests/
+poetry run pytest
 ```
 
 Run specific test files:
 
 ```bash
-pytest tests/test_read_data.py
-pytest tests/test_transform_data.py
-pytest tests/test_transform_script.py
+poetry run pytest tests/test_read_data.py
+poetry run pytest tests/test_transform_data.py
+poetry run pytest tests/test_transform_script.py
 ```
 
 Run tests with verbose output:
 
 ```bash
-pytest -v tests/
+poetry run pytest -v
 ```
 
 ## Code Structure
@@ -94,8 +110,8 @@ The application expects the input Parquet file to have the following columns:
 ## Output Format
 
 The application produces a CSV file with the following columns:
-- `hour`: Hour timestamp (format: 'YYYY-MM-DD HH:00:00')
-- `total_sale_value`: Sum of all sale values in that hour
-- `total_quantity`: Sum of all quantities in that hour
-- `max_price`: Maximum price in that hour
-- `min_price`: Minimum price in that hour
+- `HourOfDay`: Hour of the day (integer: 0-23)
+- `TotalSaleValue`: Sum of all sale values in that hour
+- `TotalQuantity`: Sum of all quantities in that hour
+- `MaxPrice`: Maximum price in that hour
+- `MinPrice`: Minimum price in that hour
