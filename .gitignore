@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PySpark
+spark-warehouse/
+metastore_db/
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Dataset files
+*.csv
+*.parquet
+*.tsv
+*.json
+
+# Except the example files we might want to include
+!example_data.parquet
+!example_output.csv
+
+# Logs
+*.log
+.log/
+logs/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# MacOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db 
