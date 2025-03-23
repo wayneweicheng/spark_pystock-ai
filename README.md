@@ -115,3 +115,11 @@ The application produces a CSV file with the following columns:
 - `TotalQuantity`: Sum of all quantities in that hour
 - `MaxPrice`: Maximum price in that hour
 - `MinPrice`: Minimum price in that hour
+
+## Setup cloud
+
+### To sync local data to gcs
+gsutil rsync -x ".DS_Store" src/data gs://data-demo-bucket-wayne/transform-stock-tick-sale-vs-bidask/
+
+### Check to ensure files are uploaded
+gsutil ls gs://data-demo-bucket-wayne/transform-stock-tick-sale-vs-bidask/
