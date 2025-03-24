@@ -1,6 +1,16 @@
 # PyStock-AI
 
-A PySpark application for processing stock data from Parquet files, transforming it by grouping by hour, and calculating various aggregations.
+A demonstration PySpark application showcasing best practices for unit testing Spark applications and deploying them to Google Cloud Dataproc serverless with Terraform.
+
+## Project Overview
+
+This project demonstrates:
+1. How to structure a testable PySpark application
+2. Writing effective unit tests for PySpark code
+3. Setting up local development with Poetry
+4. Deploying to Google Dataproc serverless using Terraform IaC
+
+The application itself processes stock data from Parquet files, transforming it by grouping by hour, and calculating various aggregations.
 
 ## Project Structure
 
@@ -13,9 +23,12 @@ pystock-ai/
 │   ├── transform_data.py # Module for transforming data
 │   └── transform.py     # Main application
 ├── tests/               # Unit tests
+│   ├── conftest.py      # Pytest fixtures
 │   ├── test_read_data.py
 │   ├── test_transform_data.py
 │   └── test_transform_script.py
+├── terraform/           # Infrastructure as Code
+│   └── dataproc/        # Dataproc serverless configuration
 └── pyproject.toml       # Poetry configuration
 ```
 
@@ -23,8 +36,10 @@ pystock-ai/
 
 - Python 3.11+
 - Poetry for dependency management
+- Google Cloud SDK for cloud deployment
+- Terraform for infrastructure provisioning
 
-## Setup
+## Local Development Setup
 
 ### Installing Poetry
 
@@ -45,9 +60,7 @@ poetry install
 
 This will create a virtual environment and install all required dependencies defined in `pyproject.toml`.
 
-## Usage
-
-### Running the Application
+## Running the Application Locally
 
 1. Place your Parquet files in the `src/data/` directory
 2. Run the main script:
@@ -64,14 +77,22 @@ The application will:
 
 ### Customizing Input/Output Paths
 
-You can modify the input and output paths by editing the constants at the top of `src/transform.py`:
+You can modify the input and output paths by editing the constants at the top of `src/transform.py` or use command-line arguments:
 
-```python
-INPUT_PATH = "path/to/your/input.parquet"
-OUTPUT_PATH = "path/to/your/output.csv"
+```bash
+poetry run python src/transform.py --input_path=path/to/your/input.parquet --output_path=path/to/your/output.csv
 ```
 
-## Testing
+## Testing PySpark Applications
+
+This project demonstrates comprehensive testing approaches for PySpark applications, including:
+
+- Unit testing individual Spark functions
+- Testing Spark DataFrame transformations
+- Mocking Spark session and DataFrame operations
+- Integration testing complete workflows
+
+### Running Tests
 
 Run all tests:
 
@@ -93,13 +114,66 @@ Run tests with verbose output:
 poetry run pytest -v
 ```
 
-## Code Structure
+## Cloud Deployment
 
-- **read_data.py**: Contains functions for creating a Spark session and reading Parquet files
-- **transform_data.py**: Contains functions for transforming the data (grouping by hour) and writing results
-- **transform.py**: Main script that ties everything together
+This project includes Terraform configurations to deploy the application to Google Cloud Dataproc serverless.
 
-## Expected Input Format
+### Setting Up Google Cloud
+
+1. Install Google Cloud SDK and authenticate:
+   ```bash
+   gcloud auth login
+   gcloud config set project your-project-id
+   ```
+
+2. Enable required GCP APIs:
+   ```bash
+   gcloud services enable dataproc.googleapis.com storage.googleapis.com compute.googleapis.com iam.googleapis.com
+   ```
+
+### Deploying with Terraform
+
+1. Navigate to the Terraform directory:
+   ```bash
+   cd terraform/dataproc
+   ```
+
+2. Update `terraform.tfvars` with your GCP project details:
+   ```hcl
+   project_id  = "your-gcp-project-id"
+   region      = "your-preferred-region"
+   environment = "dev"
+   ```
+
+3. Deploy using the provided script:
+   ```bash
+   ./deploy.sh
+   ```
+
+This will:
+- Initialize Terraform
+- Create necessary GCP resources
+- Upload application code to GCS
+- Submit a Dataproc serverless batch job
+- Monitor job execution
+
+### Data Synchronization
+
+Sync local data to Google Cloud Storage:
+
+```bash
+gsutil rsync -x ".DS_Store" src/data gs://data-demo-bucket-wayne/transform-stock-tick-sale-vs-bidask/
+```
+
+Verify uploaded files:
+
+```bash
+gsutil ls gs://data-demo-bucket-wayne/transform-stock-tick-sale-vs-bidask/
+```
+
+## Expected Input/Output Formats
+
+### Input Format
 
 The application expects the input Parquet file to have the following columns:
 - `SaleDateTime`: Timestamp of the sale
@@ -107,7 +181,7 @@ The application expects the input Parquet file to have the following columns:
 - `Quantity`: Quantity of shares sold
 - `SaleValue`: Total value of the sale
 
-## Output Format
+### Output Format
 
 The application produces a CSV file with the following columns:
 - `HourOfDay`: Hour of the day (integer: 0-23)
@@ -115,11 +189,3 @@ The application produces a CSV file with the following columns:
 - `TotalQuantity`: Sum of all quantities in that hour
 - `MaxPrice`: Maximum price in that hour
 - `MinPrice`: Minimum price in that hour
-
-## Setup cloud
-
-### To sync local data to gcs
-gsutil rsync -x ".DS_Store" src/data gs://data-demo-bucket-wayne/transform-stock-tick-sale-vs-bidask/
-
-### Check to ensure files are uploaded
-gsutil ls gs://data-demo-bucket-wayne/transform-stock-tick-sale-vs-bidask/
