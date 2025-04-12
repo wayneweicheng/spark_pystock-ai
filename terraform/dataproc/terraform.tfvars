@@ -1,4 +1,4 @@
-project_id   = "ark-of-data-2000"
+project_id   = "your-project-id"
 region       = "australia-southeast1"
 zone         = "australia-southeast1-a"
 environment  = "dev"

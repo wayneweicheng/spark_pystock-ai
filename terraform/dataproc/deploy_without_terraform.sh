@@ -2,7 +2,7 @@
 set -e
 
 # Configuration variables - modify these as needed
-PROJECT_ID="ark-of-data-2000" # Replace with your project ID
+PROJECT_ID="your-project-id" # Replace with your project ID
 REGION="australia-southeast1"
 BUCKET_NAME="${PROJECT_ID}-dataproc-files"
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
